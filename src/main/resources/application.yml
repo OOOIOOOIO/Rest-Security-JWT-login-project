@@ -1,0 +1,35 @@
+
+server:
+  port: 9999
+
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/privatetest
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        #        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 500
+    open-in-view: false # lazy loading!!!!!!!
+
+logging.level:
+  org.hibernate.SQL: debug
+
+jwt:
+  # secret : sinature에 붙이는 문자열 느낌, 256bit 이상이여야 한다..(영어 32글자(1글자 8bit))
+  secret: qwertyuiopasdfghjklzxcvbnmqwerty
+  # 토큰 만료 기간
+  expireMin: 16000000 # 실제로 86400000
+  # 리프레쉬 토큰 만료 기간
+  refreshExpireMin: 16000000
+
+
+
+
