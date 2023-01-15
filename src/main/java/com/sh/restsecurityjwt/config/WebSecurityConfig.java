@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 /**
  * WebSecurityConfig 클래스는 보안 구현의 핵심 클래스이다. cors, crsf, 세션 관리, 보호 자원에 대한 규칙을 구성한다.
- * 또한 Spring Security의 기본 구성을 확장하고 커스터마이징을 할 수 있다.
+ * 또한 Spring Security의 기본 구성을 확장하고 커스터마이징할 수 있다.
  *
  * - @EnableWebSecurity는 Spring이 클래스를 찾아 글로벌 웹 보안에 자동으로 적용할 수 있도록 한다.
  *
