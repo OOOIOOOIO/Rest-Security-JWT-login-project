@@ -188,7 +188,10 @@ public class AuthController {
     }
 
     /**
-     * 리프레쉬 토큰
+     * Access token 만료
+     * J005 일 때
+     * J002 ~ J004 -> 다시 로그인 시키자!
+     * 토큰 만료 시 Access token 재발급 API
      */
 
     @PostMapping("/refreshtoken")
@@ -214,5 +217,38 @@ public class AuthController {
         }
 
         return ResponseEntity.badRequest().body(new MessageResponseDto("Refresh Token is empty!"));
+    }
+    
+        /**
+     * Refresh Token 만료
+     *
+     * J001 일 때
+     * 403 에러 타기 전 db에서 삭제됨
+     * 나중에 리팩토링
+     */
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(HttpServletRequest request) {
+        log.info("======== refresh token 만료 ==========");
+
+        String jwt = jwtUtils.getJwtFromHeader(request);
+//         Map<String, Object> claims = jwtUtils.getUserEmailAndProviderFromJwtToken(jwt);
+
+//         String email = (String) claims.get("email");
+//         String provider = (String) claims.get("provider");
+
+
+        // refreshToken db 생성 및 저장
+//         RefreshToken refreshToken =  refreshTokenService.createRefreshToken(email, provider);
+        log.info("=========== refresh token 생성 : " + refreshToken.getToken() + " ===============");
+
+        // jwt 생성
+//         String accessToken = jwtUtils.generateTokenFromEmailAndProvider(email, provider);
+        log.info("=========== access token 생성 : " + accessToken + " ===============");
+
+
+        return ResponseEntity.ok()
+                .body(new UserInfoResponseDto(
+                        accessToken,
+                        refreshToken.getToken()));
     }
 }
