@@ -23,4 +23,4 @@ Login with JWT &amp; Spring Security &amp; Spring boot by RESTful Style.
 <hr>
 <br>
 
-[기본 코드](https://github.com/OOOIOOOIO/Web-Security-JWT-login-project)를 REST API 스타일로 리팩토링하였다!
+[웹 스타일 코드](https://github.com/OOOIOOOIO/Web-Security-JWT-login-project)를 REST API 스타일로 리팩토링하였다!
