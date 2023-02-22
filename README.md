@@ -9,39 +9,8 @@ Login with JWT &amp; Spring Security &amp; Spring boot by RESTful Style.
 - h2 : 2.1.214
 
 
-## Domain
-- ### User
-   - userId / Long 
-   - username / String
-   - email / String
-   - password / String
-   - roles / Set<Role>
-
-- ### Role
-   - roleId / Long
-   - name / Erole
-  
-- ### RefreshToken
-   - refreshId / Long
-   - user / User
-   - token / String
-   - expiryDate / Instant
-  
-- ### ERole(enum)
-   - ROLE_USER
-   - ROLE_MODERATOR
-   - ROLE_ADMIN
-
-User <--OneToOne-- RefreshToken
-User <--ManyToMany--> Role  ===> "USER_ROLES" TABLE CREATED
-
 <br>
-
-## ErrorCode
-![image](https://user-images.githubusercontent.com/74396651/212683008-31e74ff8-7e75-42f4-bfeb-1cb0b56ea6a2.png)
-
-![image](https://user-images.githubusercontent.com/74396651/212682946-7315b7ba-2496-471c-aa44-b34d7e2c4207.png)
-
+<hr>
 <br>
 
 ## ErrorHandling
@@ -54,4 +23,4 @@ User <--ManyToMany--> Role  ===> "USER_ROLES" TABLE CREATED
 <hr>
 <br>
 
-[기본 코드](https://github.com/OOOIOOOIO/Web-Security-JWT-login-project)를 REST API 스타일로 리팩토링하였다!(Goal Tracker 어플 제작을 위해....하하...)
+[기본 코드](https://github.com/OOOIOOOIO/Web-Security-JWT-login-project)를 REST API 스타일로 리팩토링하였다!
