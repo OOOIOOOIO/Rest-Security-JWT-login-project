@@ -1,7 +1,7 @@
 # Rest-Security-JWT-login-project
 Login with JWT &amp; Spring Security &amp; Spring boot by RESTful Style. 
 
-##Project Spec
+## Project Spec
 - java : 11
 - Spring Boot : 2.7.6
 - Graddle : 7.5
