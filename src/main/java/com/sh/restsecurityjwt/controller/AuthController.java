@@ -189,12 +189,11 @@ public class AuthController {
 
     /**
      * Access token 만료
-     * J005 일 때
-     * J002 ~ J004 -> 다시 로그인 시키자!
+     * J005 일 때(J002 ~ J004때는 다시 로그인 시키자!)
      * 토큰 만료 시 Access token 재발급 API
      */
 
-    @PostMapping("/refreshtoken")
+    @PostMapping("/access-token")
     public ResponseEntity<?> refreshtoken(HttpServletRequest request) {
         // refreshToken 조회(uuid)
         String refreshToken = jwtUtils.getJwtRefreshFromHeader(request);
@@ -204,7 +203,7 @@ public class AuthController {
 
             // db 조회
             return refreshTokenService.findByToken(refreshToken)
-                    .map(token -> refreshTokenService.verifyExpiration(token)) // 만료시간 검증 : db에서 삭제 후 403 error
+                    .map(token -> refreshTokenService.verifyExpiration(token)) // 만료시간 검증, db에서 삭제 후 403 error 던짐
                     .map(refreshToken1 -> refreshToken1.getUser()) // 만료가 아닐 경우 그대로 토큰 리턴
                     .map(user -> {
                         // accessToken 재생성
@@ -224,25 +223,30 @@ public class AuthController {
      *
      * J001 일 때
      * 403 에러 타기 전 db에서 삭제됨
-     * 나중에 리팩토링
+     * 
      */
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(HttpServletRequest request) {
         log.info("======== refresh token 만료 ==========");
 
-        String jwt = jwtUtils.getJwtFromHeader(request);
-//         Map<String, Object> claims = jwtUtils.getUserEmailAndProviderFromJwtToken(jwt);
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword()));
 
-//         String email = (String) claims.get("email");
-//         String provider = (String) claims.get("provider");
+        // SecurityContext에 올림
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // 유저 정보 가져오기
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        String jwt = jwtUtils.getJwtFromHeader(request);
+        String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
 
         // refreshToken db 생성 및 저장
-//         RefreshToken refreshToken =  refreshTokenService.createRefreshToken(email, provider);
+        RefreshToken refreshToken =  refreshTokenService.createRefreshToken((userDetails.getUserId());
         log.info("=========== refresh token 생성 : " + refreshToken.getToken() + " ===============");
 
         // jwt 생성
-//         String accessToken = jwtUtils.generateTokenFromEmailAndProvider(email, provider);
+         String accessToken = jwtUtils.generateTokenFromUsername(email);
         log.info("=========== access token 생성 : " + accessToken + " ===============");
 
 
