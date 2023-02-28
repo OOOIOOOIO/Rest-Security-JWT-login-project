@@ -1,5 +1,5 @@
 # Rest-Security-JWT-login-project
-Login with JWT &amp; Spring Security &amp; Spring boot by RESTful Style. 
+Login with RESTful Style using JWT & Spring Security & Spring boot
 
 ## Project Spec
 - java : 11
