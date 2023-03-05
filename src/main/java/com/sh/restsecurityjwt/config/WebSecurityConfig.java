@@ -83,7 +83,7 @@ public class WebSecurityConfig {  // extends WebSecurityConfigurerAdapte, Spring
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-//                .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**", "/profile",).permitAll() //정적리소스 물어보기
+//                .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**", "/profile",).permitAll() //정적리소스
                 .antMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated();
 

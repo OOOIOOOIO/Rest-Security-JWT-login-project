@@ -1,6 +1,6 @@
 package com.sh.restsecurityjwt.config.jwt;
 
-import com.gdsc.side.api.service.security.UserDetailsServiceImpl;
+import com.sh.restsecurityjwt.service.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -67,12 +67,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     /**
      * request header에서 jwt(xxx.xxx.xxx) 조회
      *
-     * header 이름 : jwt-auth-token
+     * header 이름 : access-token
      */
     private String parseJwt(HttpServletRequest request) {
 
         // header에서 xxx.xxx.xxx 가져오기
-        String jwt = request.getHeader("jwt-auth-token");
+        String jwt = request.getHeader("access-token");
 
         return jwt;
     }

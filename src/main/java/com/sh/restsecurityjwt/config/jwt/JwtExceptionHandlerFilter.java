@@ -1,8 +1,8 @@
 package com.sh.restsecurityjwt.config.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gdsc.side.api.exception.errorcode.JwtCustomErrorCode;
-import com.gdsc.side.api.exception.type.JwtTokenExpiredException;
+import com.sh.restsecurityjwt.exception.errorcode.JwtCustomErrorCode;
+import com.sh.restsecurityjwt.exception.type.JwtTokenExpiredException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;

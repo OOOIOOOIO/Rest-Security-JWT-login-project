@@ -17,6 +17,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtUtils {
 
+    // 여기서는 @ConfigurationProperties(prefix = "jwt")를 활용해 프로퍼티값 가져오기
 //    @Value("${jwt.secret}")
 //    private String secret;
 //    @Value("${jwt.expireMin}")
@@ -25,20 +26,20 @@ public class JwtUtils {
     private final JwtInfoProperties jwtInfoProperties;
 
     /**
-     * header에서 jwt-access 가져오기
-     * header 이름 : jwt-auth-token
+     * header에서 access-token 가져오기
+     * header 이름 : access-token
      */
     public String getJwtFromHeader(HttpServletRequest request) {
 
-        return request.getHeader("jwt-auth-token");
+        return request.getHeader("access-token");
     }
 
     /**
-     * header에서 jwt-refresh 가져오기
-     * header 이름 : jwt-auth-refresh-token
+     * header에서 refresh-token 가져오기
+     * header 이름 : refresh-token
      */
     public String getJwtRefreshFromHeader(HttpServletRequest request) {
-        return request.getHeader("jwt-auth-refresh-token");
+        return request.getHeader("refresh-token");
     }
 
 
