@@ -10,14 +10,12 @@ import com.sh.restsecurityjwt.domain.ERole;
 import com.sh.restsecurityjwt.domain.RefreshToken;
 import com.sh.restsecurityjwt.domain.Role;
 import com.sh.restsecurityjwt.domain.User;
-import com.sh.restsecurityjwt.exception.ErrorMessage;
 import com.sh.restsecurityjwt.exception.type.TokenRefreshException;
 import com.sh.restsecurityjwt.repository.RoleRepository;
 import com.sh.restsecurityjwt.repository.UserRepository;
 import com.sh.restsecurityjwt.service.RefreshTokenService;
 import com.sh.restsecurityjwt.service.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,11 +26,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
-//@CrossOrigin(origins = "*", maxAge = 3600) // 60분
+@CrossOrigin(origins = "*", maxAge = 3600) // 60분
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -93,14 +94,13 @@ public class AuthController {
          * accessToken
          * refreshToken
          */
-        return new ResponseEntity<UserInfoResponseDto>(new UserInfoResponseDto(userDetails.getUserId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles,
-                accessToken,
-                refreshToken.getToken()), HttpStatus.OK);
-
-
+        return ResponseEntity.ok()
+                .body(new UserInfoResponseDto(userDetails.getUserId(),
+                        userDetails.getUsername(),
+                        userDetails.getEmail(),
+                        roles,
+                        accessToken,
+                        refreshToken.getToken()));
 
     }
 
@@ -165,7 +165,7 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
 
-        return new ResponseEntity<>(new MessageResponseDto("USER REGISTERED SUCCESSFULLY!"), HttpStatus.OK);
+        return ResponseEntity.ok(new MessageResponseDto("USER REGISTERED SUCCESSFULLY!"));
 
     }
 
@@ -183,35 +183,36 @@ public class AuthController {
             refreshTokenService.deleteByUserId(userId);
         }
 
-        return new ResponseEntity<>(new MessageResponseDto("You've been signed out!"), HttpStatus.OK);
+        return ResponseEntity.ok()
+                .body(new MessageResponseDto("You've been signed out!"));
     }
 
     /**
      * 리프레쉬 토큰
      */
 
-    @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(HttpServletRequest request) {
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<?> refreshtoken(HttpServletRequest request) {
         // refreshToken 조회(uuid)
         String refreshToken = jwtUtils.getJwtRefreshFromHeader(request);
 
         // 존재한다면(시간 비교)
         if ((refreshToken != null) && (refreshToken.length() > 0)) {
 
-            // access token을 통해 유저 정보 조회
-            String jwtFromHeader = jwtUtils.getJwtFromHeader(request);
-            String username = jwtUtils.getUserNameFromJwtToken(jwtFromHeader);
+            // db 조회
+            return refreshTokenService.findByToken(refreshToken)
+                    .map(token -> refreshTokenService.verifyExpiration(token)) // 만료시간 검증 : db에서 삭제 후 403 error
+                    .map(refreshToken1 -> refreshToken1.getUser()) // 만료가 아닐 경우 그대로 토큰 리턴
+                    .map(user -> {
+                        // accessToken 재생성
+                        String accessToken = jwtUtils.generateTokenFromUsername(user.getUsername()); // lazy 로딩
 
-            // refresh token db 조회 및 검증
-            RefreshToken getRefreshToken = refreshTokenService.findByToken(refreshToken).orElseThrow(() -> new TokenRefreshException(refreshToken, "Refresh token is not in database!"));
-            refreshTokenService.verifyExpiration(getRefreshToken);
-
-            String accessToken = jwtUtils.generateTokenFromUsername(username);
-
-            return new ResponseEntity<>(new ReAccessTokenResponseDto("Token is refreshed successfully!", accessToken), HttpStatus.OK);
-
+                        return ResponseEntity.ok()
+                                .body(new ReAccessTokenResponseDto("Token is refreshed successfully!", accessToken));
+                    })
+                    .orElseThrow(() -> new TokenRefreshException(refreshToken, "Refresh token is not in database!"));
         }
 
-        return new ResponseEntity<>(new ErrorMessage("J001", new Date(), "Refresh Token is empty!", "api/auth/refresh-token"), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body(new MessageResponseDto("Refresh Token is empty!"));
     }
 }
